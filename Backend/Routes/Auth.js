@@ -3,7 +3,7 @@ const User = require("../Models/User");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 var jwt = require("jsonwebtoken");
-const fetchuser = require('../Middleware/fetchuser.js')
+const fetchuser = require("../Middleware/fetchuser.js");
 const { body, validationResult } = require("express-validator");
 
 router.post(
@@ -45,7 +45,7 @@ router.post(
             console.error(error.message);
             res.status(500).send("Some Error occured");
         }
-    },
+    }
 );
 
 module.exports = router;
@@ -62,9 +62,9 @@ router.post(
             return res.status(400).json({ errors: errors.array() });
         }
         // Check whether the user with this email exists already
-        const {email, password} = req.body;
+        const { email, password } = req.body;
         try {
-            let user = await User.findOne({ email});
+            let user = await User.findOne({ email });
             if (!user) {
                 return res.status(400).json({
                     error: "Enter Valid Credentials!",
@@ -79,8 +79,8 @@ router.post(
             }
             const data = {
                 user: {
-                    id: user.id
-                }
+                    id: user.id,
+                },
             };
             var authToken = jwt.sign(data, "@&^^#$&!^(@&#$!(&(*&(");
             res.json({ authToken });
@@ -88,24 +88,20 @@ router.post(
             console.error(error.message);
             res.status(500).send("Some Error occured");
         }
-    },
+    }
 );
 
 module.exports = router;
 
-
-router.post(
-  "/userdata", fetchuser ,
-  async (req, res) => {
-      try { 
-          let userid = req.user.id;
-          const user = await User.findById(userid).select('-password');
-          res.send(user); 
-      } catch (error) {
-          console.error(error.message);
-          res.status(500).send("Some Error occured");
-      }
-  },
-);
+router.post("/userdata", fetchuser, async (req, res) => {
+    try {
+        let userid = req.user.id;
+        const user = await User.findById(userid).select("-password");
+        res.send(user);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send("Some Error occured");
+    }
+});
 
 module.exports = router;
